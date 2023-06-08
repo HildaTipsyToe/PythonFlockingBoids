@@ -12,8 +12,8 @@ class MainProgram:
     def __init__(self):
         pygame.init()
         self.running = True
-        self.width = 1800
-        self.height = 1000
+        self.width = 1280
+        self.height = 720
 
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Boids simulation test drive')
@@ -24,17 +24,20 @@ class MainProgram:
 
         self.form = pygame.draw.polygon(self.window, (0, 255, 255), ((10, 10), (23, 15), (10, 20)))
 
-        self.radius = 5
-        self.BoidsCount = 200
+        self.BoidsCount = 500
+        self.identity = 0
+        self.radius = 3
         self.bSeparation = 0.5
         self.bAcceleration = 0.3
         self.bCohesion = 0.5
         self.Boids = []
 
+
         for boids in range(self.BoidsCount):
             self.Boids.append(
                 Boids(random.randint(0 + self.radius * 2, self.width - self.radius * 2), random.randint(0 +
-                 self.radius * 2, self.height - self.radius * 2), self.radius))
+                 self.radius * 2, self.height - self.radius * 2),  self.radius, pygame.math.Vector2(5, 5), self.identity))
+            self.identity += 1
 
     def getRefreshRate(self, Device):
         settings = win32api.EnumDisplaySettings(Device.DeviceName, -1)
@@ -57,7 +60,7 @@ class MainProgram:
 
             self.window.fill((255, 255, 255))
             for boids in self.Boids:
-                boids.update(self.window, self.width, self.height)
+                boids.update(self.window, self.width, self.height, boids, self.Boids)
                 boids.draw(self.window)
             pygame.display.update()
             self.clock.tick(self.fps)
