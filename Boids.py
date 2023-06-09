@@ -17,15 +17,29 @@ class Boids:
         self.radius = radius
         self.numpoints = 300
 
+        self.maxspeed = 5
+        self.sqMaxSpeed = self.maxspeed * self.maxspeed
+
     def draw(self, window):
         pygame.draw.circle(window, self.color, self.position, self.radius)
 
-    def update(self, window, width, height, Main_Boids, other_boids):
-        self.vel += self.acc
-        self.position += self.vel
+    def update(self, window, width, height, other_boids, Max_speed):
+        self.acc += self.getDestanceInVectorNormalize(other_boids)
+        pre_move = self.vel
 
+
+        self.vel += self.acc
+
+
+
+        if self.vel > vector(1):
+            self.vel = Max_speed
+
+
+
+
+        self.position += self.vel
         self.acc = vector()
-        print(self.vel)
 
         if self.position.x > width:
             self.position.x = 0
@@ -38,23 +52,28 @@ class Boids:
 
         if self.position.y < 0:
             self.position.y = height
-        self.avoidanceMethod(other_boids, window)
+        #self.avoidanceMethod(other_boids, window)
         pygame.draw.line(window, (0, 0, 0), self.position, self.position + self.vel, 2)
 
-    def accelerate(self, acc):
-        self.acc += acc
+    def accelerate(self, other_boids):
+
+    def getDestanceInVectorNormalize(self, GravitateTowards):
+        for i in GravitateTowards:
+            if self.identity != i.identity:
+                dst = vector(i.position.x - self.position.x, i.position.y - self.position.y)
+                return vector.normalize(dst)
+
 
     def avoidanceMethod(self, other_boids, window):
         self.FieldOfView(window)
         for otherboid in other_boids:
             if otherboid.identity != self.identity:
                 distancebetween = vector.distance_to(self.position, otherboid.position)
-                #print(distancebetween," boids id: ", self.identity, " other boids id: ", otherboid.identity)
-                if distancebetween < 25:
+                print(distancebetween," boids id: ", self.identity, " other boids id: ", otherboid.identity)
+                if distancebetween < 50:
                     self.collisionMethod(otherboid, distancebetween)
                     if self.identity > otherboid.identity:
-                        pass
-                        #pygame.draw.line(window, (0,0,0), self.position, otherboid.position, 2)
+                        pygame.draw.line(window, (0,0,0), self.position, otherboid.position, 2)
 
 
     def collisionMethod(self, other_boids, distanceBetween=100):
