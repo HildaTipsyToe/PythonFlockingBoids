@@ -3,7 +3,7 @@ import pygame
 import win32api
 from Boids import Boids
 
-
+vector = pygame.math.Vector2
 clock = pygame.time.Clock()
 math = pygame.math
 
@@ -24,9 +24,9 @@ class MainProgram:
 
         self.form = pygame.draw.polygon(self.window, (0, 255, 255), ((10, 10), (23, 15), (10, 20)))
 
-        self.BoidsCount = 500
+        self.BoidsCount = 5
         self.identity = 0
-        self.radius = 3
+        self.radius = 6
         self.bSeparation = 0.5
         self.bAcceleration = 0.3
         self.bCohesion = 0.5
@@ -60,6 +60,7 @@ class MainProgram:
 
             self.window.fill((255, 255, 255))
             for boids in self.Boids:
+                boids.accelerate(vector(0, 0.01))
                 boids.update(self.window, self.width, self.height, boids, self.Boids)
                 boids.draw(self.window)
             pygame.display.update()

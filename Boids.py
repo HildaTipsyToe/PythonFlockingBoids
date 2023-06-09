@@ -12,6 +12,7 @@ class Boids:
         self.identity = identity
         self.position = vector(x, y)
         self.color = color
+        self.acc = vector()
         self.vel = self.getRandomDirection(vel)
         self.radius = radius
         self.numpoints = 300
@@ -20,7 +21,11 @@ class Boids:
         pygame.draw.circle(window, self.color, self.position, self.radius)
 
     def update(self, window, width, height, Main_Boids, other_boids):
+        self.vel += self.acc
         self.position += self.vel
+
+        self.acc = vector()
+        print(self.vel)
 
         if self.position.x > width:
             self.position.x = 0
@@ -36,7 +41,11 @@ class Boids:
         self.avoidanceMethod(other_boids, window)
         pygame.draw.line(window, (0, 0, 0), self.position, self.position + self.vel, 2)
 
+    def accelerate(self, acc):
+        self.acc += acc
+
     def avoidanceMethod(self, other_boids, window):
+        self.FieldOfView(window)
         for otherboid in other_boids:
             if otherboid.identity != self.identity:
                 distancebetween = vector.distance_to(self.position, otherboid.position)
@@ -44,7 +53,8 @@ class Boids:
                 if distancebetween < 25:
                     self.collisionMethod(otherboid, distancebetween)
                     if self.identity > otherboid.identity:
-                        pygame.draw.line(window, (0,0,0), self.position, otherboid.position, 2)
+                        pass
+                        #pygame.draw.line(window, (0,0,0), self.position, otherboid.position, 2)
 
 
     def collisionMethod(self, other_boids, distanceBetween=100):
@@ -56,9 +66,11 @@ class Boids:
             #return print("De rammer     id: ", self.identity, " og other id: ", other_boids.identity, "----------------------------")
             return print(self.vel, "------", self.identity)
 
-    def randomMovement(self):
+    def randomMovement(self, window):
         pass
 
+    def FieldOfView(self, window):
+        pygame.draw.arc(window, (0, 0, 0), (self.position.x, self.position.y, 20, 20), math.pi/2, math.pi*2)
 
     def getRandomDirection(self, vel=vector()):
         angle = 360 * random.random()
