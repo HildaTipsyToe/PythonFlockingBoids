@@ -80,8 +80,9 @@ class Boids:
             return vector()
         for boids in self.FOWList:
             dst = vector(boids.position.x - self.position.x, boids.position.y - self.position.y)
-            if dst != 0:
-                CohesionMove += vector.normalize(dst)
+            if dst == 0:
+                return vector()
+            CohesionMove += vector.normalize(dst)
 
         CohesionMove /= len(self.FOWList)
 
