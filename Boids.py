@@ -60,7 +60,8 @@ class Boids:
             self.position.y = height
 
         pygame.draw.line(window, (0, 0, 0), self.position, self.position + self.vel * 2, 2)
-        pygame.draw.circle(window, (0, 0, 0), self.position, 50, width=1)
+        pygame.draw.circle(window, (0, 0, 0), self.position, self.FOW, width=1)
+        pygame.draw.circle(window, (0, 0, 0), self.position, self.FOW/2, width=1)
 
     '''if self.position.x + self.radius >= width or self.position.x - self.radius <= 0:
             self.position.x = -self.position.x
@@ -85,7 +86,8 @@ class Boids:
             CohesionMove += vector.normalize(dst)
 
         CohesionMove /= len(self.FOWList)
-
+        for boids in self.FOWList:
+            CohesionMove -= self.separation(boids)
         return CohesionMove
 
 
@@ -106,6 +108,7 @@ class Boids:
 
         if not self.FOWList:
             acc /= len(self.FOWList)
+
             return acc
 
     def inSideFOW(self, boid, window):
@@ -138,10 +141,16 @@ class Boids:
         yspeed = vel.y * math.cos(angle)
         return vector(xspeed, yspeed)
 
-    def separation(self):
-        for boid in self.FOWList:
-            if vector.distance_to(self.position, boid.position) < self.FOW/2:
-
+    def separation(self, boid):
+        CohesionMove = vector()
+        if vector.distance_to(self.position, boid.position) < self.FOW/2:
+            self.color = (255, 0, 0)
+            print(boid.position)
+            if vector.distance_to(self.position, boid.position) < self.FOW/2 - 5:
+                self.color = (255,255,0)
+            return boid.position
+        else:
+            return CohesionMove
 
     def alignment(self):
         pass
