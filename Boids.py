@@ -139,7 +139,9 @@ class Boids:
         return vector(xspeed, yspeed)
 
     def separation(self):
-        pass
+        for boid in self.FOWList:
+            if vector.distance_to(self.position, boid.position) < self.FOW/2:
+
 
     def alignment(self):
         pass

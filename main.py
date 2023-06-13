@@ -32,8 +32,7 @@ class MainProgram:
         self.bCohesion = 0.5
         self.Boids = []
 
-        self.maxSpeed = 12
-
+        self.maxSpeed = 5
 
         for boids in range(self.BoidsCount):
             self.Boids.append(
