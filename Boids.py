@@ -1,6 +1,7 @@
 import math
 import random
 import pygame
+import numpy as np
 
 vector3 = pygame.math.Vector3
 vector = pygame.math.Vector2
@@ -87,9 +88,19 @@ class Boids:
 
         CohesionMove /= len(self.FOWList)
         for boids in self.FOWList:
-            CohesionMove -= self.separation(boids)
+            CohesionMove -= self.seperation(boids)
         return CohesionMove
 
+    def seperation(self, boid):
+        cohesion = vector()
+        if vector.distance_to(self.position, boid.position) < self.FOW/2:
+            self.color = (255, 0, 0)
+            cohesion = boid.position - self.position
+            if vector.distance_to(self.position, boid.position) < self.FOW/2 - 5:
+                self.color = (255,255,0)
+            return cohesion
+        else:
+            return cohesion
 
     def distance(self, window):
         self.FOWList = []
@@ -97,16 +108,15 @@ class Boids:
 
         for boids in self.boidsList:
             self.inSideFOW(boids, window)
-        print(len(self.FOWList), "   -----   ", self.identity)
         if self.FOWList:
             for boids in self.FOWList:
                 dst = vector(boids.position.x - self.position.x, boids.position.y - self.position.y)
                 acc += vector.normalize(dst)
-                print(len(self.FOWList))
+
         else:
             return vector.normalize(vector(self.vel))
 
-        if not self.FOWList:
+        if self.FOWList:
             acc /= len(self.FOWList)
 
             return acc
@@ -131,26 +141,12 @@ class Boids:
             pygame.draw.line(window, (0, 0, 0), self.position, boid.position, 1)
             print(self.identity, " hvem kigger den efter?: ", boid.identity)
 
-    def collisionMethod(self, other_boids, distanceBetween=100):
-        if self.radius + other_boids.radius + 1 >= distanceBetween:
-            self.vel *= -1
-
     def getRandomDirection(self, vel=vector()):
         angle = 360 * random.random()
         xspeed = vel.x * math.sin(angle)
         yspeed = vel.y * math.cos(angle)
         return vector(xspeed, yspeed)
 
-    def separation(self, boid):
-        CohesionMove = vector()
-        if vector.distance_to(self.position, boid.position) < self.FOW/2:
-            self.color = (255, 0, 0)
-            print(boid.position)
-            if vector.distance_to(self.position, boid.position) < self.FOW/2 - 5:
-                self.color = (255,255,0)
-            return boid.position
-        else:
-            return CohesionMove
 
     def alignment(self):
         pass

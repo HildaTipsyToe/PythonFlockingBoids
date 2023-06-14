@@ -24,7 +24,7 @@ class MainProgram:
 
         self.form = pygame.draw.polygon(self.window, (0, 255, 255), ((10, 10), (23, 15), (10, 20)))
 
-        self.BoidsCount = 5
+        self.BoidsCount = 200
         self.identity = 0
         self.radius = 6
         self.bSeparation = 0.5
