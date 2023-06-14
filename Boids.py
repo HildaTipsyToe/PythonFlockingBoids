@@ -25,13 +25,14 @@ class Boids:
         pygame.draw.circle(window, self.color, self.position, self.radius)
 
     def update(self, window, width, height, other_boids, Max_speed):
-        if self.identity == 0:
+
+        '''if self.identity == 0:
             self.radius = 10
             self.color = (0, 0, 255)  # Blå
         if self.identity == len(self.boidsList):
             self.color = (0, 255, 0)  # Grøn
         if self.identity == 15:
-            self.color = (255, 0, 0)  # Rød
+            self.color = (255, 0, 0)  # Rød'''
 
         if not self.boidsList:  # not kan bruges istedet for "self.boidsList == []"
             for boids in other_boids:
@@ -48,27 +49,18 @@ class Boids:
         self.position += self.vel
         self.acc = vector()
 
-        if self.position.x > width:
-            self.position.x = 0
+        if self.position.x + self.FOW >= width or self.position.x - self.FOW <= 0:
+            self.position.x = -self.position.x
 
-        if self.position.x < 0:
-            self.position.x = width
+        if self.position.y + self.FOW >= height or self.position.y - self.FOW <= 0:
+            self.vel.y = -self.vel.y
 
-        if self.position.y > height:
-            self.position.y = 0
 
-        if self.position.y < 0:
-            self.position.y = height
+
 
         pygame.draw.line(window, (0, 0, 0), self.position, self.position + self.vel * 2, 2)
         pygame.draw.circle(window, (0, 0, 0), self.position, self.FOW, width=1)
         pygame.draw.circle(window, (0, 0, 0), self.position, self.FOW/2, width=1)
-
-    '''if self.position.x + self.radius >= width or self.position.x - self.radius <= 0:
-            self.position.x = -self.position.x
-
-        if self.position.y + self.radius >= height or self.position.y - self.radius <= 0:
-           self.position.y = -self.position.y'''
 
 
     def steeredTowards(self, window):
@@ -93,6 +85,7 @@ class Boids:
 
     def seperation(self, boid):
         cohesion = vector()
+        self.color = (0, 0, 0)
         if vector.distance_to(self.position, boid.position) < self.FOW/2:
             self.color = (255, 0, 0)
             cohesion = boid.position - self.position
