@@ -20,6 +20,7 @@ class Boids:
         self.boidsList = []
         self.FOWList = []
         self.FOW = 50
+        self.directionValue = 0
 
     def draw(self, window):
         pygame.draw.circle(window, self.color, self.position, self.radius)
